@@ -10,7 +10,7 @@ packages = [{ include = "fast_zero" }]
 python = "3.11.*"
 fastapi = "^0.101.0"
 uvicorn = "^0.23.2"
-pydantic = {extras = ["email"], version = "^2.1.1"}
+pydantic = { extras = ["email"], version = "^2.1.1" }
 sqlalchemy = "^2.0.19"
 pydantic-settings = "^2.0.2"
 alembic = "^1.11.2"
@@ -46,6 +46,7 @@ run = 'uvicorn fast_zero.app:app --reload'
 pre_test = 'task lint'
 test = 'pytest -s -x --cov=fast_zero -vv'
 post_test = 'coverage html'
+post_test_open = 'coverage html && xdg-open ./htmlcov/index.html &'
 
 [build-system]
 requires = ["poetry-core"]
