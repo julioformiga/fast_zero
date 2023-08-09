@@ -16,19 +16,14 @@ def session():
         connect_args={'check_same_thread': False},
         poolclass=StaticPool,
     )
-    TestSessionLocal = sessionmaker(
+    Base.metadata.create_all(engine)
+    Session = sessionmaker(
         autocommit=False,
         autoflush=False,
         bind=engine,
     )
-
+    yield Session()
     Base.metadata.drop_all(engine)
-    Base.metadata.create_all(engine)
-    session = TestSessionLocal()
-    try:
-        yield session
-    finally:
-        session.close()
 
 
 @pytest.fixture
