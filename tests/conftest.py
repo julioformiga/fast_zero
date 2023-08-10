@@ -1,7 +1,8 @@
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import StaticPool, create_engine
+from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.pool import StaticPool
 
 from fast_zero.app import app
 from fast_zero.database import get_session
@@ -17,12 +18,12 @@ def session():
         connect_args={'check_same_thread': False},
         poolclass=StaticPool,
     )
-    Base.metadata.create_all(engine)
     Session = sessionmaker(
         autocommit=False,
         autoflush=False,
         bind=engine,
     )
+    Base.metadata.create_all(engine)
     yield Session()
     Base.metadata.drop_all(engine)
 
@@ -43,7 +44,7 @@ def client(session):
 def user(session):
     password = 'testtest'
     user = User(
-        username='Teste',
+        username='teste',
         email='teste@test.com',
         password=get_password_hash(password),
     )
