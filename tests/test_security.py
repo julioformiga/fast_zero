@@ -1,7 +1,7 @@
 from jose import jwt
-from fast_zero.settings import Settings
 
 from fast_zero.security import create_access_token
+from fast_zero.settings import Settings
 
 
 def test_jwt():

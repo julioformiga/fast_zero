@@ -18,21 +18,21 @@ def test_create_user(client):
     }
 
 
-def test_create_user_error_400_username_registred(client):
+def test_create_user_error_400_username_registred(client, user):
     response = client.post(
         '/users/',
         json={
-            'username': 'alice',
-            'email': 'alice@example.com',
-            'password': 'secret',
+            'username': user.username,
+            'email': user.email,
+            'password': user.password,
         },
     )
     response = client.post(
         '/users/',
         json={
-            'username': 'alice',
-            'email': 'alice@example.com',
-            'password': 'secret',
+            'username': user.username,
+            'email': user.email,
+            'password': user.password,
         },
     )
     assert response.status_code == 400
@@ -56,31 +56,55 @@ def test_update_user(client, user, token):
         f'/users/{user.id}',
         headers={'Authorization': f'Bearer {token}'},
         json={
-            'username': 'bob',
-            'email': 'bob@example.com',
-            'password': 'mynewpassword',
+            'username': user.username,
+            'email': user.email,
+            'password': user.password,
         },
     )
     assert response.status_code == 200
     assert response.json() == {
-        'username': 'bob',
-        'email': 'bob@example.com',
-        'id': 1,
+        'username': user.username,
+        'email': user.email,
+        'id': user.id,
     }
 
 
-def test_update_user_error_400_not_enough_permissions(client, user, token):
+def test_update_user_wrong_user(client, user_other, token):
     response = client.put(
-        f'/users/{user.id + 1}',
+        f'/users/{user_other.id}',
         headers={'Authorization': f'Bearer {token}'},
         json={
-            'username': 'test',
-            'email': 'test@test.com',
-            'password': 'testtest',
+            'username': 'alice',
+            'email': user_other.email,
+            'password': user_other.password,
         },
     )
     assert response.status_code == 400
     assert response.json() == {'detail': 'Not enough permissions'}
+
+
+def test_update_user_not_enough_permissions(client, user, token):
+    response = client.put(
+        f'/users/{user.id}',
+        headers={'Authorization': f'Bearer {token}'},
+        json={
+            'username': 'alice',
+            'email': user.email,
+            'password': user.password,
+        },
+    )
+    assert response.status_code == 400
+    assert response.json() == {'detail': 'Not enough permissions'}
+
+
+# def test_update_user_404_user_not_found(client, user, token):
+#     response = client.put(
+#         f'/users/{user.id}',
+#         headers={'Authorization': f'Bearer {token}'},
+#         json=None,
+#     )
+#     assert response.status_code == 404
+#     assert response.json() == {'detail': 'User not found'}
 
 
 def test_delete_user(client, user, token):
@@ -91,9 +115,10 @@ def test_delete_user(client, user, token):
     assert response.json() == {'detail': 'User deleted'}
 
 
-def test_delete_user_error_404_user_not_found(client, user, token):
+def test_delete_user_user_not_found(client, user_other, token):
     response = client.delete(
-        f'/users/{user.id + 1}', headers={'Authorization': f'Bearer {token}'}
+        f'/users/{user_other.id}',
+        headers={'Authorization': f'Bearer {token}'},
     )
     assert response.status_code == 400
     assert response.json() == {'detail': 'Not enough permissions'}

@@ -4,12 +4,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-
 from fast_zero.database import get_session
 from fast_zero.models import User
 from fast_zero.schemas import Message, UserList, UserPublic, UserSchema
 from fast_zero.security import get_current_user, get_password_hash
-
 
 router = APIRouter(prefix='/users', tags=['users'])
 
@@ -51,6 +49,14 @@ def update_user(
     current_user: CurrentUser,
 ):
     if current_user.id != user_id:
+        raise HTTPException(status_code=400, detail='Not enough permissions')
+
+    current_user = session.scalar(select(User).where(User.id == user_id))
+
+    if current_user is None:
+        raise HTTPException(status_code=404, detail='User not found')
+
+    if current_user.username != user.username:
         raise HTTPException(status_code=400, detail='Not enough permissions')
 
     current_user.username = user.username
