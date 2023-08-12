@@ -1,5 +1,10 @@
 name: Pipeline
 on: [push, pull_request]
+env:
+  DATABASE_URL: ${{ var.DATABASE_URL }}
+  SECRET_KEY: ${{ var.SECRET_KEY }}
+  ALGORITHM: ${{ var.ALGORITHM }}
+  ACCESS_TOKEN_EXPIRE_MINUTES: ${{ var.ACCESS_TOKEN_EXPIRE_MINUTES }}
 
 jobs:
   test:
@@ -12,7 +17,7 @@ jobs:
       - name: Instalar o python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11.1'
+          python-version: '3.11.4'
 
       - name: Instalar Poetry
         run: pip install poetry
