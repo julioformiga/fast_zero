@@ -1,10 +1,10 @@
 name: Pipeline
 on: [push, pull_request]
 env:
-  DATABASE_URL: ${{ var.DATABASE_URL }}
-  SECRET_KEY: ${{ var.SECRET_KEY }}
-  ALGORITHM: ${{ var.ALGORITHM }}
-  ACCESS_TOKEN_EXPIRE_MINUTES: ${{ var.ACCESS_TOKEN_EXPIRE_MINUTES }}
+  DATABASE_URL: ${{ vars.DATABASE_URL }}
+  SECRET_KEY: ${{ vars.SECRET_KEY }}
+  ALGORITHM: ${{ vars.ALGORITHM }}
+  ACCESS_TOKEN_EXPIRE_MINUTES: ${{ vars.ACCESS_TOKEN_EXPIRE_MINUTES }}
 
 jobs:
   test:
