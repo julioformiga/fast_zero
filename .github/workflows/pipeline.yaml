@@ -4,8 +4,7 @@ env:
   DATABASE_URL: ${{ vars.DATABASE_URL }}
   SECRET_KEY: ${{ vars.SECRET_KEY }}
   ALGORITHM: ${{ vars.ALGORITHM }}
-  ACCESS_TOKEN_EXPIRE_MINUTES: ${{ vars.ACCESS_TOKEN_EXPIRE_MINUTES }}
-
+  ACCESS_TOKEN_EXPIRE_MINUTES: 30
 jobs:
   test:
     runs-on: ubuntu-latest
